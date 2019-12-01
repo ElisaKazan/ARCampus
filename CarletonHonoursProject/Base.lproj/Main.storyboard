@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--ARView-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" userLabel="ARView" customClass="ViewController" customModule="CarletonHonoursProject" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eig-Tf-W8d" customClass="ARView" customModule="RealityKit">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view opaque="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M0Q-XS-MsT" customClass="ARCoachingOverlayView">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6q0-8N-JVx" customClass="BuildingInfoOverlayView" customModule="CarletonHonoursProject" customModuleProvider="target">
+                                <rect key="frame" x="10" y="44" width="394" height="130"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Default Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZDB-NV-5IQ">
+                                        <rect key="frame" x="8" y="8" width="251" height="24"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Default summary" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Als-Gc-Pqg">
+                                        <rect key="frame" x="8" y="37" width="251" height="20"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Food: default" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y8a-Mn-Csr">
+                                        <rect key="frame" x="8" y="62" width="251" height="20"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Floors: default" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AE2-2Z-8hq">
+                                        <rect key="frame" x="8" y="87" width="251" height="20"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder" translatesAutoresizingMaskIntoConstraints="NO" id="khX-FJ-sJn">
+                                        <rect key="frame" x="269" y="5" width="120" height="120"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="120" id="HgD-aN-k3h"/>
+                                            <constraint firstAttribute="height" constant="120" id="Jy0-hS-JZg"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.083638258280000002" green="0.51254373789999996" blue="0.39406403899999998" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="AE2-2Z-8hq" firstAttribute="top" secondItem="y8a-Mn-Csr" secondAttribute="bottom" constant="5" id="3Cr-LX-vRA"/>
+                                    <constraint firstItem="khX-FJ-sJn" firstAttribute="centerY" secondItem="6q0-8N-JVx" secondAttribute="centerY" id="4Lx-69-nPv"/>
+                                    <constraint firstItem="khX-FJ-sJn" firstAttribute="leading" secondItem="Als-Gc-Pqg" secondAttribute="trailing" constant="10" id="DvV-8T-l36"/>
+                                    <constraint firstItem="khX-FJ-sJn" firstAttribute="leading" secondItem="ZDB-NV-5IQ" secondAttribute="trailing" constant="10" id="EnN-j5-wUC"/>
+                                    <constraint firstAttribute="height" constant="130" id="GU5-ir-bmh"/>
+                                    <constraint firstItem="Als-Gc-Pqg" firstAttribute="leading" secondItem="6q0-8N-JVx" secondAttribute="leading" constant="8" id="Gzq-Pd-u9Z"/>
+                                    <constraint firstItem="Als-Gc-Pqg" firstAttribute="top" secondItem="ZDB-NV-5IQ" secondAttribute="bottom" constant="5" id="IX7-Tm-XKo"/>
+                                    <constraint firstItem="AE2-2Z-8hq" firstAttribute="leading" secondItem="6q0-8N-JVx" secondAttribute="leading" constant="8" id="LoF-Sb-zbe"/>
+                                    <constraint firstItem="khX-FJ-sJn" firstAttribute="leading" secondItem="y8a-Mn-Csr" secondAttribute="trailing" constant="10" id="ahV-Yc-mZi"/>
+                                    <constraint firstItem="ZDB-NV-5IQ" firstAttribute="leading" secondItem="6q0-8N-JVx" secondAttribute="leading" constant="8" id="c1f-4B-BxH"/>
+                                    <constraint firstItem="y8a-Mn-Csr" firstAttribute="top" secondItem="Als-Gc-Pqg" secondAttribute="bottom" constant="5" id="cin-A6-liU"/>
+                                    <constraint firstAttribute="trailing" secondItem="khX-FJ-sJn" secondAttribute="trailing" constant="5" id="dEM-Ab-WUF"/>
+                                    <constraint firstItem="ZDB-NV-5IQ" firstAttribute="top" secondItem="6q0-8N-JVx" secondAttribute="top" constant="8" id="fBR-f8-rUE"/>
+                                    <constraint firstItem="khX-FJ-sJn" firstAttribute="leading" secondItem="AE2-2Z-8hq" secondAttribute="trailing" constant="10" id="n04-5I-m2P"/>
+                                    <constraint firstItem="y8a-Mn-Csr" firstAttribute="leading" secondItem="6q0-8N-JVx" secondAttribute="leading" constant="8" id="nwn-EO-VNW"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="floorLabel" destination="AE2-2Z-8hq" id="oGe-aC-dA3"/>
+                                    <outlet property="foodLabel" destination="y8a-Mn-Csr" id="Uo3-pF-xsD"/>
+                                    <outlet property="imageView" destination="khX-FJ-sJn" id="Mtb-Hm-1hz"/>
+                                    <outlet property="nameLabel" destination="ZDB-NV-5IQ" id="r3S-K9-vTw"/>
+                                    <outlet property="summaryLabel" destination="Als-Gc-Pqg" id="1IA-WS-kxA"/>
+                                </connections>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="M0Q-XS-MsT" firstAttribute="leading" secondItem="zvs-kd-qTC" secondAttribute="leading" id="9rL-EJ-bWb"/>
+                            <constraint firstItem="6q0-8N-JVx" firstAttribute="leading" secondItem="zvs-kd-qTC" secondAttribute="leading" constant="10" id="F4k-bN-h15"/>
+                            <constraint firstItem="M0Q-XS-MsT" firstAttribute="centerY" secondItem="eig-Tf-W8d" secondAttribute="centerY" id="Gxw-Rk-V1j"/>
+                            <constraint firstItem="zvs-kd-qTC" firstAttribute="trailing" secondItem="6q0-8N-JVx" secondAttribute="trailing" constant="10" id="coJ-na-JKN"/>
+                            <constraint firstItem="M0Q-XS-MsT" firstAttribute="centerX" secondItem="eig-Tf-W8d" secondAttribute="centerX" id="dBE-6m-5wK"/>
+                            <constraint firstItem="M0Q-XS-MsT" firstAttribute="top" secondItem="eig-Tf-W8d" secondAttribute="top" id="q2I-gp-ZIr"/>
+                            <constraint firstItem="6q0-8N-JVx" firstAttribute="top" secondItem="zvs-kd-qTC" secondAttribute="top" id="v9h-wl-PNc"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zvs-kd-qTC"/>
+                    </view>
+                    <connections>
+                        <outlet property="BuildingInfoOverlayView" destination="6q0-8N-JVx" id="coX-A2-ro7"/>
+                        <outlet property="arView" destination="eig-Tf-W8d" id="x39-bV-XEC"/>
+                        <outlet property="buildingInfoOverlayView" destination="6q0-8N-JVx" id="uH6-gL-uev"/>
+                        <outlet property="coachingOverlayView" destination="M0Q-XS-MsT" id="oiR-ad-BZG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="133.92857142857142"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="placeholder" width="600" height="600"/>
+    </resources>
+</document>

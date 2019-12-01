@@ -1,0 +1,68 @@
+{
+    "HP": {
+        "name": "Herzberg Laboratories",
+        "summary": "Science Building",
+        "food": "None",
+        "floors": 5
+    },
+    "RB": {
+        "name": "Richcraft Hall",
+        "summary": "Journalism Building",
+        "food": "Tim Hortons",
+        "floors": 5
+    },
+    "SC": {
+        "name": "Steacie Building",
+        "summary": "Chemistry Building",
+        "food": "None",
+        "floors": 5
+    },
+    "TB": {
+        "name": "Tory Building",
+        "summary": "Academic Support Building",
+        "food": "None",
+        "floors": 6
+    },
+    "UC": {
+        "name": "University Center",
+        "summary": "Main Campus Building",
+        "food": "Cafeteria & Various",
+        "floors": 6
+    },
+    "AT": {
+        "name": "Azrieli Theatre",
+        "summary": "Lecture Halls",
+        "food": "None",
+        "floors": 4
+    },
+    "AP": {
+        "name": "Azrieli Pavilion",
+        "summary": "BIT Building",
+        "food": "None",
+        "floors": 5
+    },
+    "DT": {
+        "name": "Dunton Tower",
+        "summary": "Various Professor Offices",
+        "food": "None",
+        "floors": 24
+    },
+    "ML": {
+        "name": "MacOdrum Library",
+        "summary": "Campus Library",
+        "food": "Starbucks",
+        "floors": 5
+    },
+    "SA": {
+        "name": "Southam Hall",
+        "summary": "Theatres and Classrooms",
+        "food": "None",
+        "floors": 6
+    },
+    "PA": {
+        "name": "Paterson Hall",
+        "summary": "Arts Building",
+        "food": "None",
+        "floors": 4
+    }
+}
