@@ -22,6 +22,9 @@ class ViewController: UIViewController {
     /// The plane anchor found by coaching overlay
     var horizontalPlaneAnchor: ARAnchor?
     
+    /// The arrow entity
+    var arrowEntity: Entity?
+    
     var buildings = [String: Building]()
     
     var debugMode = true
@@ -57,8 +60,8 @@ class ViewController: UIViewController {
         /// Run the view's session
         arView.session.run(arConfiguration, options: [])
         
-        /// Load the diorama from the RC file (this is done asynchronously
-        loadDiorama()
+        /// Loads the diorama scene from the RC file  asynchronously
+        loadDioramaScene()
     
         /// Instructions for getting a nice horizontal plane
         presentCoachingOverlay()
@@ -98,6 +101,9 @@ class ViewController: UIViewController {
             return
         }
         
+        print("You tapped building \(buildingEntity.name)")
+
+        
         let buildingID = buildingEntity.name
         
         /// Check for valid building code
@@ -111,15 +117,66 @@ class ViewController: UIViewController {
         
         /// Update building info overlay view and display
         DispatchQueue.main.async {
+            self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingID)
             self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingID)
             self.buildingInfoOverlayView.isHidden = false
-            
-            self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingID)
         }
     }
     
     func highlightSelectedBuilding(buildingEntity: Entity, buildingCode: String) {
-        print("Highlight Selected Building")
+        print("Highlighting building \(buildingCode)...")
+        //print("The scenes anchors (probably AnchorEntity): \(arView.scene.anchors)") //this is all of them
+        
+        //print("Components: \(buildingEntity.components)") // displays HP->HP_1-> etc
+        //print("Transform: \(buildingEntity.transform)")
+        
+        guard let arrow = arrowEntity else {
+            print("ERROR: Arrow entity not found")
+            return
+        }
+        
+        arrow.isEnabled = true
+        
+        // ATTEMPT #1
+//        var newTransform = arrow.transform
+//        print("Current Transform.matrix of Arrow: \(newTransform.matrix)")
+//        print("Current Transform.matrix of Building: \(buildingEntity.transform.matrix)")
+//
+//        print("Current Transform.translation of Arrow: \(newTransform.translation)")
+//               print("Current Transform.translation of Building: \(buildingEntity.transform.translation)")
+//
+//        /// Update the arrows position relative to the buildingEntity
+//        newTransform.translation.x =  buildingEntity.transform.translation.x
+//        newTransform.translation.z =  buildingEntity.transform.translation.z
+//        arrow.setTransformMatrix(newTransform.matrix, relativeTo: buildingEntity)
+        
+        guard let arrowParent = arrow.parent else {
+            print("Error: arrow does not have a parent")
+            return
+        }
+        
+        print("Arrow Start Parent is \(arrowParent.name)")
+        print("Arrow Start Position is \(arrow.position)")
+        
+        // An entity has a position -> https://developer.apple.com/documentation/realitykit/entity/3244108-position
+        // arrow.position (which is relative to the parent) "This is the same as the translation valye on the transform" Apple docs
+        // set the arrow's parent to be the building (may not need to set this if we can set position relative to the building instead
+        arrow.setParent(buildingEntity) // should this be before or after setPosition()
+        
+        let x:Float = 0
+        let y:Float = 0
+        let z:Float = 0
+        let newPosition = SIMD3(x, y, z)
+        arrow.setPosition(newPosition, relativeTo: buildingEntity)
+        arrow.setParent(buildingEntity)
+        
+        print("Arrow End Parent is \(arrowParent.name)")
+        print("Arrow End Position is \(arrow.position)")
+        print("--")
+        
+        
+        
+        // Transform: Transform(scale: SIMD3<Float>(0.6000001, 0.6000001, 0.6000001), rotation: simd_quatf(real: 1.0, imag: SIMD3<Float>(0.0, 0.0, 0.0)), translation: SIMD3<Float>(0.13214825, 0.0, 0.33860776))
     }
     
     func presentCoachingOverlay() {
@@ -177,8 +234,17 @@ class ViewController: UIViewController {
         arView.addGestureRecognizer(tapGesture)
     }
     
-    /// Loads Diorama from Reality Composer file
-    func loadDiorama() {
+    func setArrowEntity(dioramaEntity: Entity) {
+        guard let arrow = dioramaEntity.findEntity(named: "Arrow") else {
+            print("Error: Arrow entity cannot be found.")
+            return
+        }
+        
+        self.arrowEntity = arrow
+    }
+    
+    /// Loads DioramaScene from Reality Composer file
+    func loadDioramaScene() {
         Experience.loadDioramaSceneAsync { [weak self] result in
             /// This is the callback for when loading the diorama has completed
             switch result {
@@ -187,6 +253,9 @@ class ViewController: UIViewController {
                 guard let self = self else { return }
                 
                 self.contentIsLoaded = true
+                
+                // Find and set the arrow entity
+                self.setArrowEntity(dioramaEntity: loadedDioramaAnchorEntity)
                                 
                 if self.dioramaAnchorEntity == nil {
                     self.dioramaAnchorEntity = loadedDioramaAnchorEntity
@@ -227,8 +296,13 @@ class ViewController: UIViewController {
 }
 
 extension Entity {
-    /// Looks from child to parents until building parent is found
+    
+    /// Looks through parents and returns the entity related to a building
+    ///
+    /// - Returns: The `Entity` of a building or nil.
     func getBuildingEntity()-> Entity? {
+        
+        // TODO: Improve this
         
         if self.name == "Ground Plane" {
             print("ERROR: Bad entity found (aka Ground Plane).")
@@ -240,11 +314,9 @@ extension Entity {
         while (currEntity.parent != nil) {
             let parent = currEntity.parent!
             if parent.name == "" { break }
-            //print("Found parent \(parent.name)")
             currEntity = parent
         }
         
-        print("Final Parent Entity = \(currEntity.name)")
         return currEntity
     }
 }
