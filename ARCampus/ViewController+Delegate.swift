@@ -86,6 +86,9 @@ extension ViewController: ARSessionDelegate {
         self.coachingOverlayView.setActive(false, animated: false)
         self.coachingOverlayView.removeFromSuperview()
         
+        /// Remove all debug options (aka see the plane detection)
+        arView.debugOptions = []
+        
         /// Need to remove the VC as ARSessionDelegate to stop getting updates per frame
         self.arView.session.delegate = nil
         

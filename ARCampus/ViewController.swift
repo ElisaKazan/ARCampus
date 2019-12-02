@@ -77,8 +77,6 @@ class ViewController: UIViewController {
         // TODO: Pause the session
     }
     
-    
-    // TODO: Test that this happens
     @IBAction func onTap(_ sender: UITapGestureRecognizer) {
         /// Location that user tapped
         let tapLocation = sender.location(in: arView)
@@ -115,7 +113,13 @@ class ViewController: UIViewController {
         DispatchQueue.main.async {
             self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingID)
             self.buildingInfoOverlayView.isHidden = false
+            
+            self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingID)
         }
+    }
+    
+    func highlightSelectedBuilding(buildingEntity: Entity, buildingCode: String) {
+        print("Highlight Selected Building")
     }
     
     func presentCoachingOverlay() {
