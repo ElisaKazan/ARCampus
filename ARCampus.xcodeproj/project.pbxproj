@@ -21,7 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		311A64A9238B0C38007CDEF7 /* CarletonHonoursProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarletonHonoursProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		311A64A9238B0C38007CDEF7 /* ARCampus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARCampus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		311A64AC238B0C38007CDEF7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		311A64AE238B0C38007CDEF7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		311A64B0238B0C38007CDEF7 /* Experience.rcproject */ = {isa = PBXFileReference; lastKnownFileType = file.rcproject; path = Experience.rcproject; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 		311A64A0238B0C38007CDEF7 = {
 			isa = PBXGroup;
 			children = (
-				311A64AB238B0C38007CDEF7 /* CarletonHonoursProject */,
+				311A64AB238B0C38007CDEF7 /* ARCampus */,
 				311A64AA238B0C38007CDEF7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,12 +58,12 @@
 		311A64AA238B0C38007CDEF7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				311A64A9238B0C38007CDEF7 /* CarletonHonoursProject.app */,
+				311A64A9238B0C38007CDEF7 /* ARCampus.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		311A64AB238B0C38007CDEF7 /* CarletonHonoursProject */ = {
+		311A64AB238B0C38007CDEF7 /* ARCampus */ = {
 			isa = PBXGroup;
 			children = (
 				31FCA5BA2391AE1900276D3C /* buildings.json */,
@@ -79,15 +79,15 @@
 				311A64BA238B0C3B007CDEF7 /* Info.plist */,
 				3173BFF123931C5300BA75AF /* BuildingInfoOverlayView.swift */,
 			);
-			path = CarletonHonoursProject;
+			path = ARCampus;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		311A64A8238B0C38007CDEF7 /* CarletonHonoursProject */ = {
+		311A64A8238B0C38007CDEF7 /* ARCampus */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 311A64BD238B0C3B007CDEF7 /* Build configuration list for PBXNativeTarget "CarletonHonoursProject" */;
+			buildConfigurationList = 311A64BD238B0C3B007CDEF7 /* Build configuration list for PBXNativeTarget "ARCampus" */;
 			buildPhases = (
 				311A64A5238B0C38007CDEF7 /* Sources */,
 				311A64A6238B0C38007CDEF7 /* Frameworks */,
@@ -97,9 +97,9 @@
 			);
 			dependencies = (
 			);
-			name = CarletonHonoursProject;
+			name = ARCampus;
 			productName = CarletonHonoursProject;
-			productReference = 311A64A9238B0C38007CDEF7 /* CarletonHonoursProject.app */;
+			productReference = 311A64A9238B0C38007CDEF7 /* ARCampus.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -117,7 +117,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 311A64A4238B0C38007CDEF7 /* Build configuration list for PBXProject "CarletonHonoursProject" */;
+			buildConfigurationList = 311A64A4238B0C38007CDEF7 /* Build configuration list for PBXProject "ARCampus" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -130,7 +130,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				311A64A8238B0C38007CDEF7 /* CarletonHonoursProject */,
+				311A64A8238B0C38007CDEF7 /* ARCampus */,
 			);
 		};
 /* End PBXProject section */
@@ -306,13 +306,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KKFT9P6YJ;
-				INFOPLIST_FILE = CarletonHonoursProject/Info.plist;
+				INFOPLIST_FILE = ARCampus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ElisaKazan.CarletonHonoursProject;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ARCampus;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -324,13 +324,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 3KKFT9P6YJ;
-				INFOPLIST_FILE = CarletonHonoursProject/Info.plist;
+				INFOPLIST_FILE = ARCampus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = ElisaKazan.CarletonHonoursProject;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ARCampus;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -339,7 +339,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		311A64A4238B0C38007CDEF7 /* Build configuration list for PBXProject "CarletonHonoursProject" */ = {
+		311A64A4238B0C38007CDEF7 /* Build configuration list for PBXProject "ARCampus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				311A64BB238B0C3B007CDEF7 /* Debug */,
@@ -348,7 +348,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		311A64BD238B0C3B007CDEF7 /* Build configuration list for PBXNativeTarget "CarletonHonoursProject" */ = {
+		311A64BD238B0C3B007CDEF7 /* Build configuration list for PBXNativeTarget "ARCampus" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				311A64BE238B0C3B007CDEF7 /* Debug */,
