@@ -86,32 +86,26 @@ class ViewController: UIViewController {
         
         /// Find entity at tapped location
         guard let tappedEntity = arView.entity(at: tapLocation) else {
-            DispatchQueue.main.async {
-                self.buildingInfoOverlayView.isHidden = true
-            }
+            print("Error: No entity found.")
+            hideBuildingOverlayAndArrowAsync()
             return
         }
         
         /// Check if valid building entity
         guard let buildingEntity = tappedEntity.getBuildingEntity() else {
-            print("Error: No building was found")
-            DispatchQueue.main.async {
-                self.buildingInfoOverlayView.isHidden = true
-            }
+            print("Error: No building entity found.")
+            hideBuildingOverlayAndArrowAsync()
             return
         }
         
         print("You tapped building \(buildingEntity.name)")
 
-        
         let buildingID = buildingEntity.name
         
         /// Check for valid building code
         guard let building = buildings[buildingID] else {
             print("Error: Invalid building code, no building found.")
-            DispatchQueue.main.async {
-                self.buildingInfoOverlayView.isHidden = true
-            }
+            hideBuildingOverlayAndArrowAsync()
             return
         }
         
@@ -120,6 +114,24 @@ class ViewController: UIViewController {
             self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingID)
             self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingID)
             self.buildingInfoOverlayView.isHidden = false
+        }
+    }
+    
+    func hideBuildingOverlayAndArrowAsync() {
+        DispatchQueue.main.async {
+            self.buildingInfoOverlayView.isHidden = true
+            guard let arrow = self.arrowEntity else {
+                print("ERROR: Arrow entity not found")
+                return
+            }
+            //arrow.setParent(nil) // Do we want the parent to be nil?
+            arrow.isEnabled = false
+            
+            /// Entities need to be attached to a scene in order to be simulated and rendered.
+            /// `isActive` indicates whether an entity is currently being simulated.
+            /// Entities can be temporarily disabled by setting `isEnabled` to `false`. The `isEnabled` state
+            /// is inherited in the scene hierarchy. This means, setting `isEnabled` to `false` disables all
+            /// entities in a subtree (the current entity and all of its children).
         }
     }
     
@@ -164,7 +176,7 @@ class ViewController: UIViewController {
         arrow.setParent(buildingEntity) // should this be before or after setPosition()
         
         let x:Float = 0
-        let y:Float = 0
+        let y:Float = (buildingCode == "DT") ? 0.85 : 0.75 // In meters probably, 0.75 is good for regular buildings, dunton needs taller like 0.85
         let z:Float = 0
         let newPosition = SIMD3(x, y, z)
         arrow.setPosition(newPosition, relativeTo: buildingEntity)
@@ -173,8 +185,6 @@ class ViewController: UIViewController {
         print("Arrow End Parent is \(arrowParent.name)")
         print("Arrow End Position is \(arrow.position)")
         print("--")
-        
-        
         
         // Transform: Transform(scale: SIMD3<Float>(0.6000001, 0.6000001, 0.6000001), rotation: simd_quatf(real: 1.0, imag: SIMD3<Float>(0.0, 0.0, 0.0)), translation: SIMD3<Float>(0.13214825, 0.0, 0.33860776))
     }
@@ -189,7 +199,6 @@ class ViewController: UIViewController {
         coachingOverlayView.goal = .horizontalPlane
         coachingOverlayView.activatesAutomatically = false
         self.coachingOverlayView.setActive(true, animated: true)
-        
     }
     
     func placeDioramaInWorld() {
@@ -296,7 +305,6 @@ class ViewController: UIViewController {
 }
 
 extension Entity {
-    
     /// Looks through parents and returns the entity related to a building
     ///
     /// - Returns: The `Entity` of a building or nil.
