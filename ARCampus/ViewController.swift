@@ -72,7 +72,6 @@ class ViewController: UIViewController {
         presentCoachingOverlay()
     }
     
-    // TODO: CLEAN THIS UP
     @IBAction func onTap(_ sender: UITapGestureRecognizer) {
         /// Location that user tapped
         let tapLocation = sender.location(in: arView)
@@ -119,9 +118,9 @@ class ViewController: UIViewController {
                     if debugMode {
                         print("Building: \(buildingEntity.name)")
                     }
-                    // TODO: Add string to constants
+                    
                     guard let arrowBlockEntity = buildingEntity.findEntity(named: Strings.arrowBlock) else {
-                        print("Error: Cannot find ArrowBlock for \(buildingEntity.name) entity - hideAllArrowBlocks()")
+                        print("Error: Cannot find ArrowBlock for \(buildingEntity.name) entity")
                         continue
                     }
                     
