@@ -97,12 +97,12 @@ class ViewController: UIViewController {
             return
         }
         
+        /// Move arrow to selected building
+        self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingCode)
+        
         /// Update building info overlay view and display
         self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingCode)
         self.buildingInfoOverlayView.isHidden = false
-        
-        /// Move arrow to selected building
-        self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingCode)
     }
     
     /// Check if entity is a valid building
@@ -152,7 +152,6 @@ class ViewController: UIViewController {
                             
                         }
                     }
-                    
                 }
             }
         }
@@ -176,6 +175,10 @@ class ViewController: UIViewController {
         arrowEntity.isEnabled = false
     }
     
+    /// Move the arrow entity to show which building has been selected
+    /// - Parameters:
+    ///   - buildingEntity: the building entity of the tapped building
+    ///   - buildingCode: the building code (ex: HP) of the tapped building
     func highlightSelectedBuilding(buildingEntity: Entity, buildingCode: String) {
         
         guard let dioramaAnchor = self.dioramaAnchorEntity else {
@@ -208,6 +211,8 @@ class ViewController: UIViewController {
         
         /// Move the arrow to the selected building using the ArrowBlock
         arrowEntity.setPosition(.zero, relativeTo: arrowBlockEntity)
+        
+        
 
         if debugMode {
             print("Arrow End position: \(arrowEntity.position)")
