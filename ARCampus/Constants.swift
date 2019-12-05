@@ -16,3 +16,12 @@ enum Constants {
     static let minExtentLength: Float = 2//1
     static let maxExtentLength: Float = 5//2
 }
+
+enum Strings {
+    static let arrowBlock = "ArrowBlock"
+    static let arrow = "Arrow"
+}
+
+enum Errors {
+    // TODO: Add error strings here
+}

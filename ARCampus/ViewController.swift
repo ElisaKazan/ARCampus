@@ -11,186 +11,213 @@ import RealityKit
 import ARKit
 
 class ViewController: UIViewController {
-    
+    /// The view that displays the real world with virtual objects (i.e. Augmented Reality)
     @IBOutlet var arView: ARView!
+    
+    /// The view that provides instructions for getting a horizontal plane
     @IBOutlet weak var coachingOverlayView: ARCoachingOverlayView!
+    
+    /// The view that displays building information
     @IBOutlet weak var buildingInfoOverlayView: BuildingInfoOverlayView!
     
-    /// The anchor for the RealityComposer file
+    /// The anchor for the DioramaScene from the Reality Composer file
     var dioramaAnchorEntity: Experience.DioramaScene?
     
     /// The plane anchor found by coaching overlay
     var horizontalPlaneAnchor: ARAnchor?
     
-    /// The arrow entity
-    var arrowEntity: Entity?
-    
+    /// A dictionary of building codes to Building objects
     var buildings = [String: Building]()
     
+    /// A toggle for print statements
     var debugMode = true
-    var useDiorama = true
     
     /// Booleans for state
     var contentIsLoaded = false
     var planeAnchorIsFound = false
     
-    // Building information
-    var currentBuilding: Building?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.buildingInfoOverlayView.isHidden = true
-        
-        loadJSONData()
-        
-        /// Create ARWorldTrackingConfiguration for horizontal planes
-        let arConfiguration = ARWorldTrackingConfiguration()
-        arConfiguration.planeDetection = .horizontal
-        arConfiguration.isCollaborationEnabled = false
-        
-        /// Include AR debug options
-        if debugMode {
-            arView.debugOptions = [.showAnchorGeometry,
-                                   .showAnchorOrigins,
-                                   .showWorldOrigin]
-        }
-        
-        // TODO: See if we want to use additional AR options
-        /// Run the view's session
-        arView.session.run(arConfiguration, options: [])
-        
-        /// Loads the diorama scene from the RC file  asynchronously
-        loadDioramaScene()
-    
-        /// Instructions for getting a nice horizontal plane
-        presentCoachingOverlay()
-        
-        /// ORIGINAL AR CODE
-        
-        /// Load the "Box" scene from the "Experience" Reality File
-        //let boxAnchor = try! Experience.loadBox()
-        
-        /// Add the box anchor to the scene
-        //arView.scene.anchors.append(boxAnchor)
-
+        setupView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         // TODO: Pause the session
     }
     
+    func setupView() {
+        /// Hide building information view
+        self.buildingInfoOverlayView.isHidden = true
+        
+        // Load building information to dictionary
+        loadJSONData()
+            
+        /// Create ARWorldTrackingConfiguration for horizontal planes
+        let arConfiguration = ARWorldTrackingConfiguration()
+        arConfiguration.planeDetection = .horizontal
+        arConfiguration.isCollaborationEnabled = false
+            
+        /// Include AR debug options
+        arView.debugOptions = [.showAnchorGeometry,
+                               .showAnchorOrigins,
+                               .showWorldOrigin]
+            
+        /// Run the view's session
+        arView.session.run(arConfiguration, options: [])
+            
+        /// Loads the diorama scene from the RC file  asynchronously
+        loadDioramaScene()
+        
+        /// Instructions for getting a nice horizontal plane
+        presentCoachingOverlay()
+    }
+    
+    // TODO: CLEAN THIS UP
     @IBAction func onTap(_ sender: UITapGestureRecognizer) {
         /// Location that user tapped
         let tapLocation = sender.location(in: arView)
         
-        /// Find entity at tapped location
-        guard let tappedEntity = arView.entity(at: tapLocation) else {
-            print("Error: No entity found.")
-            hideBuildingOverlayAndArrowAsync()
+        /// Find entity at tapped location and check if valid building (no entity tapped, invalid building code)
+        guard let buildingEntity = arView.entity(at: tapLocation), isBuilding(entity: buildingEntity)  else {
+            print("Error: Invalid entity found.")
+            hideBuildingOverlayAndArrow()
             return
         }
         
-        /// Check if valid building entity
-        guard let buildingEntity = tappedEntity.getBuildingEntity() else {
-            print("Error: No building entity found.")
-            hideBuildingOverlayAndArrowAsync()
-            return
-        }
+        /// Building codes are two capital letters (ex: UC for University Center)
+        let buildingCode = buildingEntity.name
         
-        print("You tapped building \(buildingEntity.name)")
+        if debugMode {
+            print("You tapped building \(buildingCode)")
+        }
 
-        let buildingID = buildingEntity.name
-        
         /// Check for valid building code
-        guard let building = buildings[buildingID] else {
+        guard let building = buildings[buildingCode] else {
             print("Error: Invalid building code, no building found.")
-            hideBuildingOverlayAndArrowAsync()
+            hideBuildingOverlayAndArrow()
             return
         }
         
         /// Update building info overlay view and display
-        DispatchQueue.main.async {
-            self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingID)
-            self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingID)
-            self.buildingInfoOverlayView.isHidden = false
+        self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingCode)
+        self.buildingInfoOverlayView.isHidden = false
+        
+        /// Move arrow to selected building
+        self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingCode)
+    }
+    
+    /// Check if entity is a valid building
+    func isBuilding(entity: Entity) -> Bool {
+        return buildings[entity.name] != nil
+    }
+    
+    /// Loops over all ArrowBlocks and hides them
+    func hideAllArrowBlocks(diorama: Experience.DioramaScene) {
+        for level1ChildEntity in diorama.children {
+            for level2ChildEntity in level1ChildEntity.children {
+                for buildingEntity in level2ChildEntity.children {
+                    if debugMode {
+                        print("Building: \(buildingEntity.name)")
+                    }
+                    // TODO: Add string to constants
+                    guard let arrowBlockEntity = buildingEntity.findEntity(named: Strings.arrowBlock) else {
+                        print("Error: Cannot find ArrowBlock for \(buildingEntity.name) entity - hideAllArrowBlocks()")
+                        continue
+                    }
+                    
+                    /// Hide block by setting isEnabled to false
+                    arrowBlockEntity.isEnabled = false
+                }
+            }
         }
     }
     
-    func hideBuildingOverlayAndArrowAsync() {
-        DispatchQueue.main.async {
-            self.buildingInfoOverlayView.isHidden = true
-            guard let arrow = self.arrowEntity else {
-                print("ERROR: Arrow entity not found")
-                return
-            }
-            //arrow.setParent(nil) // Do we want the parent to be nil?
-            arrow.isEnabled = false
+    /// Function for debugging purposes only, visually displays the entity hierarchy from the DioramaScene
+    func printSceneHierarchy(diorama: Experience.DioramaScene) {
+        print("Printing hierarchy for diorama...")
+        
+        for level1ChildEntity in diorama.children {
+            print("Level 1 Child: \(level1ChildEntity.name)")
             
-            /// Entities need to be attached to a scene in order to be simulated and rendered.
-            /// `isActive` indicates whether an entity is currently being simulated.
-            /// Entities can be temporarily disabled by setting `isEnabled` to `false`. The `isEnabled` state
-            /// is inherited in the scene hierarchy. This means, setting `isEnabled` to `false` disables all
-            /// entities in a subtree (the current entity and all of its children).
+            for level2ChildEntity in level1ChildEntity.children {
+                print("  Level 2 Child: \(level2ChildEntity.name)")
+                
+                for level3ChildEntity in level2ChildEntity.children {
+                    print("    Level 3 Child: \(level3ChildEntity.name)")
+                    
+                    for level4ChildEntity in level3ChildEntity.children {
+                        print("      Level 4 Child: \(level4ChildEntity.name)")
+                        
+                        for level5ChildEntity in level4ChildEntity.children {
+                            print("        Level 5 Child: \(level5ChildEntity.name)")
+                            
+                        }
+                    }
+                    
+                }
+            }
         }
+    }
+    
+    func hideBuildingOverlayAndArrow() {
+        /// Hide Building Overlay
+        self.buildingInfoOverlayView.isHidden = true
+        
+        /// Hide arrow
+        guard let dioramaAnchor = self.dioramaAnchorEntity else {
+            print("Error: DioramaAnchorEntity is nil")
+            return
+        }
+        
+        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
+            print("Error: ArrowEntity is nil")
+            return
+        }
+        
+        arrowEntity.isEnabled = false
     }
     
     func highlightSelectedBuilding(buildingEntity: Entity, buildingCode: String) {
-        print("Highlighting building \(buildingCode)...")
-        //print("The scenes anchors (probably AnchorEntity): \(arView.scene.anchors)") //this is all of them
         
-        //print("Components: \(buildingEntity.components)") // displays HP->HP_1-> etc
-        //print("Transform: \(buildingEntity.transform)")
-        
-        guard let arrow = arrowEntity else {
-            print("ERROR: Arrow entity not found")
+        guard let dioramaAnchor = self.dioramaAnchorEntity else {
+            print("Error: DioramaAnchorEntity is nil")
             return
         }
         
-        arrow.isEnabled = true
+        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
+            print("Error: ArrowEntity is nil")
+            return
+        }
+
+        /// Show arrow
+        arrowEntity.isEnabled = true
         
-        // ATTEMPT #1
-//        var newTransform = arrow.transform
-//        print("Current Transform.matrix of Arrow: \(newTransform.matrix)")
-//        print("Current Transform.matrix of Building: \(buildingEntity.transform.matrix)")
-//
-//        print("Current Transform.translation of Arrow: \(newTransform.translation)")
-//               print("Current Transform.translation of Building: \(buildingEntity.transform.translation)")
-//
-//        /// Update the arrows position relative to the buildingEntity
-//        newTransform.translation.x =  buildingEntity.transform.translation.x
-//        newTransform.translation.z =  buildingEntity.transform.translation.z
-//        arrow.setTransformMatrix(newTransform.matrix, relativeTo: buildingEntity)
-        
-        guard let arrowParent = arrow.parent else {
-            print("Error: arrow does not have a parent")
+        /// The ArrowBlock of the building
+        guard let arrowBlockEntity = buildingEntity.findEntity(named: Strings.arrowBlock) else {
+            print("Error: Cannot find ArrowBlock for tapped building.")
             return
         }
         
-        print("Arrow Start Parent is \(arrowParent.name)")
-        print("Arrow Start Position is \(arrow.position)")
+        if debugMode {
+            print("Highlighting building \(buildingCode)...")
+            print("Arrow Start position: \(arrowEntity.position)")
+            print("ArrowBlock Position: \(arrowBlockEntity.position)")
+        }
         
-        // An entity has a position -> https://developer.apple.com/documentation/realitykit/entity/3244108-position
-        // arrow.position (which is relative to the parent) "This is the same as the translation valye on the transform" Apple docs
-        // set the arrow's parent to be the building (may not need to set this if we can set position relative to the building instead
-        arrow.setParent(buildingEntity) // should this be before or after setPosition()
+        // TODO: Do we need the ArrowBlock to be the parent of the arrow?
+        //arrowEntity.setParent(arrowBlockEntity)
         
-        let x:Float = 0
-        let y:Float = (buildingCode == "DT") ? 0.85 : 0.75 // In meters probably, 0.75 is good for regular buildings, dunton needs taller like 0.85
-        let z:Float = 0
-        let newPosition = SIMD3(x, y, z)
-        arrow.setPosition(newPosition, relativeTo: buildingEntity)
-        arrow.setParent(buildingEntity)
-        
-        print("Arrow End Parent is \(arrowParent.name)")
-        print("Arrow End Position is \(arrow.position)")
-        print("--")
-        
-        // Transform: Transform(scale: SIMD3<Float>(0.6000001, 0.6000001, 0.6000001), rotation: simd_quatf(real: 1.0, imag: SIMD3<Float>(0.0, 0.0, 0.0)), translation: SIMD3<Float>(0.13214825, 0.0, 0.33860776))
+        /// Move the arrow to the selected building using the ArrowBlock
+        arrowEntity.setPosition(.zero, relativeTo: arrowBlockEntity)
+
+        if debugMode {
+            print("Arrow End position: \(arrowEntity.position)")
+            print("--")
+        }
     }
     
     func presentCoachingOverlay() {
-        /// Prevent power idle during coaching (coaching phase may take a while and typically expects no touch events)
+        /// Prevent device from sleeping during idle coaching (coaching phase may take a while and typically expects no touch events)
         UIApplication.shared.isIdleTimerDisabled = true
         
         coachingOverlayView.session = arView.session
@@ -201,55 +228,53 @@ class ViewController: UIViewController {
         self.coachingOverlayView.setActive(true, animated: true)
     }
     
+    func removeCoachingOverlay() {
+        // TODO: Check if this is true
+        /// No longer need to prevent sleeping as touch events are expected
+        UIApplication.shared.isIdleTimerDisabled = false
+        
+        coachingOverlayView.delegate = nil
+        coachingOverlayView.setActive(false, animated: false)
+        coachingOverlayView.removeFromSuperview()
+    }
+    
     func placeDioramaInWorld() {
-        /// Double check that conditions are met
+        /// Check that both conditions are met
         if !contentIsLoaded || !planeAnchorIsFound {
-            print("ERROR: At least one condition is not met.")
+            print("Error: At least one condition is not met.")
         }
         
         guard let planeAnchor = horizontalPlaneAnchor, let dioramaAnchor = dioramaAnchorEntity else {
-            print("ERROR: dioramaAnchorEntity is nil.")
+            print("Error: dioramaAnchorEntity is nil.")
             return
         }
         
-        /// Note: horizontalPlaneAnchor has been added to the session
-        print("Anchors: \(self.arView.scene.anchors)")
-        
-        // TODO: Connect anchors!
-        //self.arView.scene.anchors.append(planeAnchor)
-        //self.arView.scene.anchors.append(dioramaAnchor)
-        
-        // Create anchor entity from plane anchor
+        /// Create anchor entity from plane anchor
         let planeAnchorEntity = AnchorEntity(anchor: planeAnchor)
         
-        print("Scale Before: \(dioramaAnchor.scale)")
-        
-        let scale:Float = 0.25
-        
-        dioramaAnchor.setScale([scale, scale, scale], relativeTo: planeAnchorEntity)
-
-        print("Scale After: \(dioramaAnchor.scale)")
-        
-        print("DIORAMA dioramaAnchor Orientation: \(dioramaAnchor.orientation)")
-        print("DIORAMA dioramaAnchor Transform: \(dioramaAnchor.transform)")
-        
-        // TODO: what's the difference between addAnchor to scene and anchors.append()
-        self.arView.scene.addAnchor(dioramaAnchor)
-        
-        print("Scene Anchors: \(self.arView.scene.anchors)")
-                
-        /// Tap functionality
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))
-        arView.addGestureRecognizer(tapGesture)
-    }
-    
-    func setArrowEntity(dioramaEntity: Entity) {
-        guard let arrow = dioramaEntity.findEntity(named: "Arrow") else {
-            print("Error: Arrow entity cannot be found.")
-            return
+        /// Scale anchor
+        if debugMode {
+            print("AnchorEntity Scale Before: \(dioramaAnchor.scale)")
         }
         
-        self.arrowEntity = arrow
+        let scale:Float = 0.25
+        dioramaAnchor.setScale([scale, scale, scale], relativeTo: planeAnchorEntity)
+        
+        if debugMode {
+            print("AnchorEntity Scale After: \(dioramaAnchor.scale)")
+        }
+        
+        // TODO: what's the difference between addAnchor to scene and anchors.append()
+        /// Add anchor to scene
+        self.arView.scene.addAnchor(dioramaAnchor)
+        
+        if debugMode {
+            print("Anchors: \(self.arView.scene.anchors)")
+        }
+ 
+        /// Add TapGestureRecognizer for tap functionality
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))
+        arView.addGestureRecognizer(tapGesture)
     }
     
     /// Loads DioramaScene from Reality Composer file
@@ -257,25 +282,38 @@ class ViewController: UIViewController {
         Experience.loadDioramaSceneAsync { [weak self] result in
             /// This is the callback for when loading the diorama has completed
             switch result {
-            case .success(let loadedDioramaAnchorEntity): // Experience.Diorama, this is the 3D model from reality composer
-                print("Diorama has successfully finished loading.")
+            case .success(let loadedDioramaAnchorEntity):
                 guard let self = self else { return }
                 
+                if self.debugMode {
+                    print("Diorama has successfully finished loading.")
+                }
+
+                /// Update state
                 self.contentIsLoaded = true
                 
-                // Find and set the arrow entity
-                self.setArrowEntity(dioramaEntity: loadedDioramaAnchorEntity)
-                                
+                /// Hide all arrow block entities
+                self.hideAllArrowBlocks(diorama: loadedDioramaAnchorEntity)
+                
+                /// Hide the arrow entity
+                guard let arrowEntity = loadedDioramaAnchorEntity.getArrowEntity() else {
+                    print("Error: Cannot find arrow entity")
+                    return
+                }
+                
+                arrowEntity.isEnabled = false
+                
+                /// Update dioramaAnchorEntity and place diorama in real world
                 if self.dioramaAnchorEntity == nil {
                     self.dioramaAnchorEntity = loadedDioramaAnchorEntity
-                              
+                                                  
                     /// The case where plane anchor is found first
                     if self.contentIsLoaded && self.planeAnchorIsFound {
                         self.placeDioramaInWorld()
                     }
                 }
             case .failure(let error):
-                print("ERROR: Unable to load the scene with error: \(error.localizedDescription)")
+                fatalError("Error: Unable to load the scene with error: \(error.localizedDescription)")
             }
         }
     }
@@ -304,27 +342,8 @@ class ViewController: UIViewController {
     }
 }
 
-extension Entity {
-    /// Looks through parents and returns the entity related to a building
-    ///
-    /// - Returns: The `Entity` of a building or nil.
-    func getBuildingEntity()-> Entity? {
-        
-        // TODO: Improve this
-        
-        if self.name == "Ground Plane" {
-            print("ERROR: Bad entity found (aka Ground Plane).")
-            return nil
-        }
-                
-        var currEntity = self
-        
-        while (currEntity.parent != nil) {
-            let parent = currEntity.parent!
-            if parent.name == "" { break }
-            currEntity = parent
-        }
-        
-        return currEntity
+extension Experience.DioramaScene {
+    func getArrowEntity() -> Entity? {
+        return self.findEntity(named: Strings.arrow)
     }
 }

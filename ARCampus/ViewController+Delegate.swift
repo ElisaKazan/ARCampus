@@ -10,10 +10,12 @@ import ARKit
 
 extension ViewController: ARCoachingOverlayViewDelegate {
     func coachingOverlayViewWillActivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        print("STATE - coachingOverlayViewWillActivate()")
         
-        /// WHY DISPATCH?
-        /// Because we need this to keep the camera working during the coaching overlay
+        if debugMode {
+            print("STATE - coachingOverlayViewWillActivate()")
+        }
+        
+        /// WHY DISPATCH? Because we need this to keep the camera working during the coaching overlay
         
         /// Ask the user to gather more data before placing the game into the scene
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -23,23 +25,27 @@ extension ViewController: ARCoachingOverlayViewDelegate {
     }
     
     func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        print("STATE - coachingOverlayViewDidDeactivate()")
+        if debugMode {
+            print("STATE - coachingOverlayViewDidDeactivate()")
+        }
     }
     
     func coachingOverlayViewDidRequestSessionReset(_ coachingOverlayView: ARCoachingOverlayView) {
-        print("STATE - coachingOverlayViewDidRequestSessionReset()")
+        if debugMode {
+            print("STATE - coachingOverlayViewDidRequestSessionReset()")
+        }
     }
 }
 
-/// WHY?
-/// Because we need the coaching overlay stuff (above) to see the camera
+/// WHY? Because we need the coaching overlay stuff (above) to see the camera
 extension ViewController: ARSessionDelegate {
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
-        print("STATE - ARSession didUpdate()")
+        if debugMode {
+            print("STATE - ARSession didUpdate()")
+        }
         
         let screenCenter = CGPoint(x: arView.frame.midX, y: arView.frame.midY)
-        
         let arHitTestResults = arView.hitTest(screenCenter, types: [.existingPlaneUsingExtent])
         
         guard let result = arHitTestResults.first(where: { (result) -> Bool in
@@ -66,10 +72,13 @@ extension ViewController: ARSessionDelegate {
             return
         }
         
-        print("PLANE ResultAnchor Center: \(planeAnchor.center)")
-        print("PLANE ResultAnchor Geometry: \(planeAnchor.geometry)")
-        print("PLANE ResultAnchor Alignment: \(planeAnchor.alignment)")
-        print("PLANE ResultAnchor Transform: \(planeAnchor.transform)")
+        if debugMode {
+            print("Found valid plane anchor!")
+            print("PlaneAnchor Center: \(planeAnchor.center)")
+            print("PlaneAnchor Geometry: \(planeAnchor.geometry)")
+            print("PlaneAnchor Alignment: \(planeAnchor.alignment)")
+            print("PlaneAnchor Transform: \(planeAnchor.transform)")
+        }
         
         let dioramaAnchor = ARAnchor(name: "Diorama_Anchor", transform: normalizeMatrix(planeAnchor.transform)) 
         
@@ -77,14 +86,12 @@ extension ViewController: ARSessionDelegate {
         /// https://developer.apple.com/documentation/arkit/arsession/2865612-add
         arView.session.add(anchor: dioramaAnchor)
         
-        // TODO: Save this anchor to use it later
+        /// Save this anchor
         self.horizontalPlaneAnchor = dioramaAnchor
         self.planeAnchorIsFound = true
         
         /// Remove the coaching overlay
-        self.coachingOverlayView.delegate = nil
-        self.coachingOverlayView.setActive(false, animated: false)
-        self.coachingOverlayView.removeFromSuperview()
+        self.removeCoachingOverlay()
         
         /// Remove all debug options (aka see the plane detection)
         arView.debugOptions = []
@@ -93,7 +100,10 @@ extension ViewController: ARSessionDelegate {
         self.arView.session.delegate = nil
         
         /// Reset session now that we have the anchor for the diorama
-        self.arView.session.run(ARWorldTrackingConfiguration(), options: []) // TODO: Check what options we can include, remove if unnecessary
+        self.arView.session.run(ARWorldTrackingConfiguration())
+        // TODO: Should this have the planeDetection and isCollaborationEnabled properties set or nah?
+        //arConfiguration.planeDetection = .horizontal
+        //arConfiguration.isCollaborationEnabled = false
         
         /// If ready to display content, place diorama in the real world
         if self.contentIsLoaded && self.planeAnchorIsFound {
@@ -101,12 +111,7 @@ extension ViewController: ARSessionDelegate {
         }
     }
     
-    func sessionWasInterrupted(_ session: ARSession) {
-        // TODO: Inform the user that the session has been interrupted
-    }
-    
-    /// WHY?
-    /// Because... I dunno :(
+    // TODO: Understand why normalizing the matrix is important
     func normalizeMatrix(_ matrix: float4x4) -> float4x4 {
         var normalized = matrix
         normalized.columns.0 = simd.normalize(normalized.columns.0)

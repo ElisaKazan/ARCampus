@@ -66,18 +66,18 @@
 		311A64AB238B0C38007CDEF7 /* ARCampus */ = {
 			isa = PBXGroup;
 			children = (
-				31FCA5BA2391AE1900276D3C /* buildings.json */,
-				31FCA5BC2391AE5100276D3C /* Building.swift */,
 				311A64AC238B0C38007CDEF7 /* AppDelegate.swift */,
+				3173BFF123931C5300BA75AF /* BuildingInfoOverlayView.swift */,
 				311A64AE238B0C38007CDEF7 /* ViewController.swift */,
 				311A64C0238B1683007CDEF7 /* ViewController+Delegate.swift */,
 				311A64C2238B1968007CDEF7 /* Constants.swift */,
+				31FCA5BC2391AE5100276D3C /* Building.swift */,
+				31FCA5BA2391AE1900276D3C /* buildings.json */,
 				311A64B0238B0C38007CDEF7 /* Experience.rcproject */,
 				311A64B2238B0C38007CDEF7 /* Main.storyboard */,
 				311A64B5238B0C3B007CDEF7 /* Assets.xcassets */,
 				311A64B7238B0C3B007CDEF7 /* LaunchScreen.storyboard */,
 				311A64BA238B0C3B007CDEF7 /* Info.plist */,
-				3173BFF123931C5300BA75AF /* BuildingInfoOverlayView.swift */,
 			);
 			path = ARCampus;
 			sourceTree = "<group>";
