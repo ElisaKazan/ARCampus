@@ -167,7 +167,12 @@ class ViewController: UIViewController {
             return
         }
         
-        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
+//        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
+//            print("Error: ArrowEntity is nil")
+//            return
+//        }
+        
+        guard let arrowEntity = dioramaAnchor.arrow else {
             print("Error: ArrowEntity is nil")
             return
         }
@@ -186,7 +191,7 @@ class ViewController: UIViewController {
             return
         }
         
-        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
+        guard let arrowEntity = dioramaAnchor.arrow else {
             print("Error: ArrowEntity is nil")
             return
         }
@@ -300,7 +305,7 @@ class ViewController: UIViewController {
                 self.hideAllArrowBlocks(diorama: loadedDioramaAnchorEntity)
                 
                 /// Hide the arrow entity
-                guard let arrowEntity = loadedDioramaAnchorEntity.getArrowEntity() else {
+                guard let arrowEntity = loadedDioramaAnchorEntity.arrow else {
                     print("Error: Cannot find arrow entity")
                     return
                 }
@@ -346,8 +351,9 @@ class ViewController: UIViewController {
     }
 }
 
-extension Experience.DioramaScene {
-    func getArrowEntity() -> Entity? {
-        return self.findEntity(named: Strings.arrow)
-    }
-}
+// TODO: Instead of using this, you can just use dioramaScene.arrow which return an Entity?
+//extension Experience.DioramaScene {
+//    func getArrowEntity() -> Entity? {
+//        return self.findEntity(named: Strings.arrow)
+//    }
+//}
