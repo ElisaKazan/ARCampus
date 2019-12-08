@@ -63,7 +63,7 @@
                       "isEnabled" : true,
                       "isLooping" : true,
                       "isModal" : false,
-                      "name" : "SpinAtStart",
+                      "name" : "Spin",
                       "triggers" : [
                         {
                           "__content" : [
@@ -74,7 +74,7 @@
                                 },
                                 "name" : "start"
                               },
-                              "identifier" : "219DAD02-F2B4-4609-BA0C-998693F373C6",
+                              "identifier" : "4B1ECC28-07DE-4577-B7A6-20FE08460F8C",
                               "isEnabled" : true
                             }
                           ],
@@ -786,6 +786,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -1455,6 +1462,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -2082,6 +2096,13 @@
                           {
                             "typeName" : "Bool",
                             "value" : true
+                          }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
                           }
                         ]
                       ]
@@ -2908,6 +2929,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -3566,6 +3594,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -4127,6 +4162,13 @@
                           {
                             "typeName" : "Bool",
                             "value" : true
+                          }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
                           }
                         ]
                       ]
@@ -4848,6 +4890,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -5308,6 +5357,13 @@
                           {
                             "typeName" : "Bool",
                             "value" : true
+                          }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
                           }
                         ]
                       ]
@@ -6002,6 +6058,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -6457,6 +6520,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -6573,7 +6643,7 @@
                           "length",
                           {
                             "typeName" : "Double",
-                            "value" : 0.84141196823120112
+                            "value" : 0.18442141032218934
                           }
                         ],
                         [
@@ -6659,9 +6729,9 @@
                         0.99999314546585083,
                         5.3643810815628967e-07,
                         0,
-                        0.60000002384185791,
                         0,
-                        0.80000001192092896,
+                        0,
+                        0,
                         1
                       ]
                     }
@@ -7207,6 +7277,13 @@
                             "typeName" : "Bool",
                             "value" : true
                           }
+                        ],
+                        [
+                          "rigidBody-motionType",
+                          {
+                            "typeName" : "REMotionType",
+                            "value" : "static"
+                          }
                         ]
                       ]
                     },
@@ -7267,9 +7344,9 @@
                   0.41591835021972656,
                   0.90281409025192261,
                   0,
-                  -0.17991848289966583,
-                  1.2956333160400391,
-                  2.0439183712005615,
+                  0.18374782800674438,
+                  1.1386711597442627,
+                  2.1602416038513184,
                   1
                 ],
                 "sceneTransform" : [

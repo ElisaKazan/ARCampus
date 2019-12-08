@@ -23,7 +23,7 @@ class BuildingInfoOverlayView: UIView {
         layer.masksToBounds = true
     }
     
-    // Updates the labels and image of the view given a building and its building code
+    /// Updates the labels and image of the view given a building and its building code
     func updateBuildingInfo(building: Building, buildingCode: String) {
         imageView.image = UIImage(named: buildingCode)
         nameLabel.text = building.name

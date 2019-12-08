@@ -125,7 +125,14 @@ class ViewController: UIViewController {
                     }
                     
                     /// Hide block by setting isEnabled to false
-                    arrowBlockEntity.isEnabled = false
+                    //arrowBlockEntity.isEnabled = false
+                    
+                    guard let childModelEntity = arrowBlockEntity.findEntity(named: "simpBld_root") else {
+                        print("Error: Cannot find simpBld_root entity.")
+                        return
+                    }
+                    
+                    childModelEntity.isEnabled = false
                 }
             }
         }
@@ -212,10 +219,15 @@ class ViewController: UIViewController {
         }
         
         // TODO: Do we need the ArrowBlock to be the parent of the arrow?
-        //arrowEntity.setParent(arrowBlockEntity)
+        arrowEntity.setParent(arrowBlockEntity)
+        
+        //arrowEntity.stopAllAnimations()
         
         /// Move the arrow to the selected building using the ArrowBlock
-        arrowEntity.setPosition(.zero, relativeTo: arrowBlockEntity)
+        //arrowEntity.setPosition(.zero, relativeTo: arrowBlockEntity)
+        //arrowEntity.position = arrowBlockEntity.position(relativeTo: nil)
+        
+        //arrowEntity.playAnimation(named: "Spin")
         
         
 
@@ -284,6 +296,9 @@ class ViewController: UIViewController {
         /// Add TapGestureRecognizer for tap functionality
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))
         arView.addGestureRecognizer(tapGesture)
+        
+        /// Add CollisionComponents to Buidings
+        //addCollisionComponentToBuildings()
     }
     
     /// Loads DioramaScene from Reality Composer file
@@ -349,11 +364,27 @@ class ViewController: UIViewController {
         /// Save buildings
         buildings = loadedBuildings
     }
+    
+    // This function doesn't really work or help in any way
+    func addCollisionComponentToBuildings() {
+        guard let dioramaScene = self.dioramaAnchorEntity else {
+            print("Error: Cannot find dioramaScene")
+            return
+        }
+        
+        for buildingCode in self.buildings.keys {
+            guard let currentBuildingEntity = dioramaScene.findEntity(named: buildingCode) else {
+                print("Error: Missing building \(buildingCode)")
+                continue
+            }
+            
+            print("Building \(buildingCode) has components: \(currentBuildingEntity.components)")
+            
+            // Will do nothing if entity already has a CollisionComponent
+            currentBuildingEntity.generateCollisionShapes(recursive: true)
+            
+            
+            print("Has CollisionComponent: \(currentBuildingEntity.components.has(CollisionComponent.self))")
+        }
+    }
 }
-
-// TODO: Instead of using this, you can just use dioramaScene.arrow which return an Entity?
-//extension Experience.DioramaScene {
-//    func getArrowEntity() -> Entity? {
-//        return self.findEntity(named: Strings.arrow)
-//    }
-//}
