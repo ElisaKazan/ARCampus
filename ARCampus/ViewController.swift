@@ -55,8 +55,7 @@ class ViewController: UIViewController {
             
         /// Include AR debug options
         arView.debugOptions = [.showAnchorGeometry,
-                               .showAnchorOrigins,
-                               .showWorldOrigin]
+                               .showAnchorOrigins]
             
         /// Run the view's session
         arView.session.run(arConfiguration, options: [])
@@ -266,7 +265,7 @@ class ViewController: UIViewController {
         self.arView.scene.addAnchor(dioramaAnchor)
         
         if debugMode {
-            print("Anchors: \(self.arView.scene.anchors)")
+            //print("Anchors: \(self.arView.scene.anchors)")
         }
  
         /// Add TapGestureRecognizer for tap functionality
