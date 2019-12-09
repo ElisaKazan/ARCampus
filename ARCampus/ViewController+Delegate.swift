@@ -14,30 +14,16 @@ extension ViewController: ARCoachingOverlayViewDelegate {
         if debugMode {
             print("STATE - coachingOverlayViewWillActivate()")
         }
-        
-        /// WHY DISPATCH? Because we need this to keep the camera working during the coaching overlay
-        
+                
         /// Ask the user to gather more data before placing the game into the scene
+        /// Dispatch to keep camera working during coaching overlay
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             /// Set the view controller as the delegate of the session to get updates per-frame
             self.arView.session.delegate = self
         }
     }
-    
-    func coachingOverlayViewDidDeactivate(_ coachingOverlayView: ARCoachingOverlayView) {
-        if debugMode {
-            print("STATE - coachingOverlayViewDidDeactivate()")
-        }
-    }
-    
-    func coachingOverlayViewDidRequestSessionReset(_ coachingOverlayView: ARCoachingOverlayView) {
-        if debugMode {
-            print("STATE - coachingOverlayViewDidRequestSessionReset()")
-        }
-    }
 }
 
-/// WHY? Because we need the coaching overlay stuff (above) to see the camera
 extension ViewController: ARSessionDelegate {
 
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
@@ -73,17 +59,12 @@ extension ViewController: ARSessionDelegate {
         }
         
         if debugMode {
-            print("Found valid plane anchor!")
-            print("PlaneAnchor Center: \(planeAnchor.center)")
-            print("PlaneAnchor Geometry: \(planeAnchor.geometry)")
-            print("PlaneAnchor Alignment: \(planeAnchor.alignment)")
-            print("PlaneAnchor Transform: \(planeAnchor.transform)")
+            print("Valid plane anchor found!")
         }
         
         let dioramaAnchor = ARAnchor(name: "Diorama_Anchor", transform: normalizeMatrix(planeAnchor.transform)) 
         
         /// Add the horizontal plane anchor to the session
-        /// https://developer.apple.com/documentation/arkit/arsession/2865612-add
         arView.session.add(anchor: dioramaAnchor)
         
         /// Save this anchor
@@ -101,9 +82,6 @@ extension ViewController: ARSessionDelegate {
         
         /// Reset session now that we have the anchor for the diorama
         self.arView.session.run(ARWorldTrackingConfiguration())
-        // TODO: Should this have the planeDetection and isCollaborationEnabled properties set or nah?
-        //arConfiguration.planeDetection = .horizontal
-        //arConfiguration.isCollaborationEnabled = false
         
         /// If ready to display content, place diorama in the real world
         if self.contentIsLoaded && self.planeAnchorIsFound {
@@ -111,7 +89,6 @@ extension ViewController: ARSessionDelegate {
         }
     }
     
-    // TODO: Understand why normalizing the matrix is important
     func normalizeMatrix(_ matrix: float4x4) -> float4x4 {
         var normalized = matrix
         normalized.columns.0 = simd.normalize(normalized.columns.0)

@@ -41,10 +41,6 @@ class ViewController: UIViewController {
         setupView()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        // TODO: Pause the session
-    }
-    
     func setupView() {
         /// Hide building information view
         self.buildingInfoOverlayView.isHidden = true
@@ -87,7 +83,7 @@ class ViewController: UIViewController {
         let buildingCode = buildingEntity.name
         
         if debugMode {
-            print("You tapped building \(buildingCode)")
+            print("Tapped building \(buildingCode)")
         }
 
         /// Check for valid building code
@@ -98,7 +94,7 @@ class ViewController: UIViewController {
         }
         
         /// Move arrow to selected building
-        self.highlightSelectedBuilding(buildingEntity: buildingEntity, buildingCode: buildingCode)
+        self.highlightSelectedBuilding(buildingEntity: buildingEntity)
         
         /// Update building info overlay view and display
         self.buildingInfoOverlayView.updateBuildingInfo(building: building, buildingCode: buildingCode)
@@ -124,9 +120,8 @@ class ViewController: UIViewController {
                         continue
                     }
                     
-                    /// Hide block by setting isEnabled to false
-                    //arrowBlockEntity.isEnabled = false
-                    
+                    /// Instead of disabling the arrowBlock, disable its ModelEntity
+                    /// This hides the visual model but keeps the model enabled
                     guard let childModelEntity = arrowBlockEntity.findEntity(named: "simpBld_root") else {
                         print("Error: Cannot find simpBld_root entity.")
                         return
@@ -170,17 +165,12 @@ class ViewController: UIViewController {
         
         /// Hide arrow
         guard let dioramaAnchor = self.dioramaAnchorEntity else {
-            print("Error: DioramaAnchorEntity is nil")
+            print(Strings.nilDioramaAnchorEntityError)
             return
         }
-        
-//        guard let arrowEntity = dioramaAnchor.getArrowEntity() else {
-//            print("Error: ArrowEntity is nil")
-//            return
-//        }
-        
+
         guard let arrowEntity = dioramaAnchor.arrow else {
-            print("Error: ArrowEntity is nil")
+            print(Strings.nilArrowEntityError)
             return
         }
         
@@ -188,18 +178,15 @@ class ViewController: UIViewController {
     }
     
     /// Move the arrow entity to show which building has been selected
-    /// - Parameters:
-    ///   - buildingEntity: the building entity of the tapped building
-    ///   - buildingCode: the building code (ex: HP) of the tapped building
-    func highlightSelectedBuilding(buildingEntity: Entity, buildingCode: String) {
+    func highlightSelectedBuilding(buildingEntity: Entity) {
         
         guard let dioramaAnchor = self.dioramaAnchorEntity else {
-            print("Error: DioramaAnchorEntity is nil")
+            print(Strings.nilDioramaAnchorEntityError)
             return
         }
         
         guard let arrowEntity = dioramaAnchor.arrow else {
-            print("Error: ArrowEntity is nil")
+            print(Strings.nilArrowEntityError)
             return
         }
 
@@ -213,23 +200,14 @@ class ViewController: UIViewController {
         }
         
         if debugMode {
-            print("Highlighting building \(buildingCode)...")
+            print("Highlighting building \(buildingEntity.name)...")
             print("Arrow Start position: \(arrowEntity.position)")
             print("ArrowBlock Position: \(arrowBlockEntity.position)")
         }
         
-        // TODO: Do we need the ArrowBlock to be the parent of the arrow?
+        /// Move the arrow to the selected building by setting the ArrowBlock as the parent
+        /// This prevents any race conditions with the spin behaviour in RC which modifies the arrow's transform
         arrowEntity.setParent(arrowBlockEntity)
-        
-        //arrowEntity.stopAllAnimations()
-        
-        /// Move the arrow to the selected building using the ArrowBlock
-        //arrowEntity.setPosition(.zero, relativeTo: arrowBlockEntity)
-        //arrowEntity.position = arrowBlockEntity.position(relativeTo: nil)
-        
-        //arrowEntity.playAnimation(named: "Spin")
-        
-        
 
         if debugMode {
             print("Arrow End position: \(arrowEntity.position)")
@@ -250,7 +228,6 @@ class ViewController: UIViewController {
     }
     
     func removeCoachingOverlay() {
-        // TODO: Check if this is true
         /// No longer need to prevent sleeping as touch events are expected
         UIApplication.shared.isIdleTimerDisabled = false
         
@@ -266,7 +243,7 @@ class ViewController: UIViewController {
         }
         
         guard let planeAnchor = horizontalPlaneAnchor, let dioramaAnchor = dioramaAnchorEntity else {
-            print("Error: dioramaAnchorEntity is nil.")
+            print("Error: dioramaAnchorEntity or horizontalPlaneAnchor returned nil.")
             return
         }
         
@@ -285,7 +262,6 @@ class ViewController: UIViewController {
             print("AnchorEntity Scale After: \(dioramaAnchor.scale)")
         }
         
-        // TODO: what's the difference between addAnchor to scene and anchors.append()
         /// Add anchor to scene
         self.arView.scene.addAnchor(dioramaAnchor)
         
@@ -296,9 +272,6 @@ class ViewController: UIViewController {
         /// Add TapGestureRecognizer for tap functionality
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))
         arView.addGestureRecognizer(tapGesture)
-        
-        /// Add CollisionComponents to Buidings
-        //addCollisionComponentToBuildings()
     }
     
     /// Loads DioramaScene from Reality Composer file
@@ -321,7 +294,7 @@ class ViewController: UIViewController {
                 
                 /// Hide the arrow entity
                 guard let arrowEntity = loadedDioramaAnchorEntity.arrow else {
-                    print("Error: Cannot find arrow entity")
+                    print(Strings.nilArrowEntityError)
                     return
                 }
                 
@@ -363,28 +336,5 @@ class ViewController: UIViewController {
         
         /// Save buildings
         buildings = loadedBuildings
-    }
-    
-    // This function doesn't really work or help in any way
-    func addCollisionComponentToBuildings() {
-        guard let dioramaScene = self.dioramaAnchorEntity else {
-            print("Error: Cannot find dioramaScene")
-            return
-        }
-        
-        for buildingCode in self.buildings.keys {
-            guard let currentBuildingEntity = dioramaScene.findEntity(named: buildingCode) else {
-                print("Error: Missing building \(buildingCode)")
-                continue
-            }
-            
-            print("Building \(buildingCode) has components: \(currentBuildingEntity.components)")
-            
-            // Will do nothing if entity already has a CollisionComponent
-            currentBuildingEntity.generateCollisionShapes(recursive: true)
-            
-            
-            print("Has CollisionComponent: \(currentBuildingEntity.components.has(CollisionComponent.self))")
-        }
     }
 }

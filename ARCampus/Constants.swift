@@ -10,18 +10,14 @@ import Foundation
 import CoreGraphics
 
 enum Constants {
-    /// These constants have been taken from the example (what unit are these?)
-    static let minAnchorDistance: CGFloat = 0.5 // 0.5 is original
-    static let maxAnchorDistance: CGFloat = 2.0 // 2 is original
-    static let minExtentLength: Float = 2//1
-    static let maxExtentLength: Float = 5//2
+    static let minAnchorDistance: CGFloat = 0.5
+    static let maxAnchorDistance: CGFloat = 2.0
+    static let minExtentLength: Float = 2
+    static let maxExtentLength: Float = 5
 }
 
 enum Strings {
     static let arrowBlock = "ArrowBlock"
-    static let arrow = "Arrow"
-}
-
-enum Errors {
-    // TODO: Add error strings here
+    static let nilArrowEntityError = "Error: ArrowEntity is nil"
+    static let nilDioramaAnchorEntityError = "Error: DioramaAnchorEntity is nil"
 }
